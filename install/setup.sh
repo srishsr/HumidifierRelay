@@ -8,7 +8,7 @@ if [ ! -d "${VENV_DIR}" ]; then
 fi
 
 sudo apt-get update
-sudo apt-get install -y i2c-tools libgpiod-dev python3-libgpiod
+sudo apt-get install -y i2c-tools libgpiod-dev python3-libgpiod libopenblas-dev
 source ${VENV_DIR}/bin/activate
 python -m pip uninstall -y RPi.GPIO
 python -m pip install -r ${BASE_DIR}/requirements.txt

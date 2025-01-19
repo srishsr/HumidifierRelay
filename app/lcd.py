@@ -51,9 +51,9 @@ def setup_button(button):
 
 north_button = digitalio.DigitalInOut(board.D26)
 setup_button(north_button)
-east_button = digitalio.DigitalInOut(board.D16)
+east_button = digitalio.DigitalInOut(board.D20)
 setup_button(east_button)
-south_button = digitalio.DigitalInOut(board.D20)
+south_button = digitalio.DigitalInOut(board.D16)
 setup_button(south_button)
 west_button = digitalio.DigitalInOut(board.D19)
 setup_button(west_button)
@@ -159,10 +159,9 @@ while True:
         sensor_timer = now
         relay_state = not relay_state
         relay.value = relay_state
-    # print(
-    #     get_button(north_button),
-    #     get_button(east_button),
-    #     get_button(south_button),
-    #     get_button(west_button),
-    # )
+
+    print("north:", get_button(north_button))
+    print("east:", get_button(east_button))
+    print("south:", get_button(south_button))
+    print("west:", get_button(west_button))
     sleep(0.001)

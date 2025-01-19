@@ -1,45 +1,81 @@
 import time
 
-from app.devices.dpad import Dpad
-from app.devices.humidity_sensors import HumiditySensors
-from app.devices.io.io_process import IoProcess
-from app.devices.lcd import Lcd
-from app.devices.relay import Relay
+from app.container import Container
+from app.state_machine.behaviors.decrease_setpoint import DecreaseSetpointBehavior
+from app.state_machine.behaviors.idle import IdleBehavior
+from app.state_machine.behaviors.increase_setpoint import IncreaseSetpointBehavior
+from app.state_machine.behaviors.setpoint_config import SetpointConfigBehavior
+from app.state_machine.behaviors.show_data import ShowDataBehavior
+from app.state_machine.keys.state_key import StateKey
+from app.state_machine.keys.transition_event import TransitionEvent
+from app.state_machine.state import State
+from app.state_machine.state_machine import StateMachine
 
 
 class Runner:
     def __init__(self):
-        self.lcd = Lcd()
-        self.humidity_sensors = HumiditySensors()
-        self.relay = Relay()
-        self.dpad = Dpad()
-        self.io: list[IoProcess] = [
-            self.lcd,
-            self.humidity_sensors,
-            self.relay,
-            self.dpad,
-        ]
+        self.container = Container()
+
+        self.state_machine = StateMachine(
+            StateKey.SHOW_DATA,
+            states=[
+                State(
+                    StateKey.SHOW_DATA,
+                    ShowDataBehavior(self.container),
+                    event_transitions={
+                        TransitionEvent.IDLE_NO_INPUT: StateKey.IDLE,
+                        TransitionEvent.NORTH_PRESSED: StateKey.INCREASE_SETPOINT,
+                        TransitionEvent.SOUTH_PRESSED: StateKey.DECREASE_SETPOINT,
+                        TransitionEvent.EAST_PRESSED: StateKey.SETPOINT_CONFIG,
+                        TransitionEvent.WEST_PRESSED: StateKey.IDLE,
+                    },
+                ),
+                State(
+                    StateKey.IDLE,
+                    IdleBehavior(self.container),
+                    event_transitions={
+                        TransitionEvent.NORTH_PRESSED: StateKey.SHOW_DATA,
+                        TransitionEvent.EAST_PRESSED: StateKey.SHOW_DATA,
+                        TransitionEvent.SOUTH_PRESSED: StateKey.SHOW_DATA,
+                        TransitionEvent.WEST_PRESSED: StateKey.SHOW_DATA,
+                    },
+                ),
+                State(
+                    StateKey.SETPOINT_CONFIG,
+                    SetpointConfigBehavior(self.container),
+                    event_transitions={
+                        TransitionEvent.IDLE_NO_INPUT: StateKey.IDLE,
+                        TransitionEvent.WEST_PRESSED: StateKey.SHOW_DATA,
+                        TransitionEvent.NORTH_PRESSED: StateKey.INCREASE_SETPOINT,
+                        TransitionEvent.SOUTH_PRESSED: StateKey.DECREASE_SETPOINT,
+                    },
+                ),
+                State(
+                    StateKey.INCREASE_SETPOINT,
+                    IncreaseSetpointBehavior(self.container),
+                    event_transitions={TransitionEvent.DONE: StateKey.SETPOINT_CONFIG},
+                ),
+                State(
+                    StateKey.DECREASE_SETPOINT,
+                    DecreaseSetpointBehavior(self.container),
+                    event_transitions={TransitionEvent.DONE: StateKey.SETPOINT_CONFIG},
+                ),
+            ],
+        )
 
     def start(self) -> None:
-        for io in self.io:
-            io.start()
+        self.state_machine.initialize()
+        self.container.initialize()
 
     def tick(self) -> None:
-        self.lcd.set_message(["Hello", f"World! {time.perf_counter():0.1f}"])
-        if humidity_data := self.humidity_sensors.get():
-            for index, sensor_data in enumerate(humidity_data.sensors):
-                print(
-                    f"{index} Temperature: {sensor_data.temperature}°C, Humidity: {sensor_data.humidity}%"
-                )
-        if dpad_data := self.dpad.get():
-            for index, button_data in enumerate(dpad_data.buttons):
-                print(f"{index} Button: {button_data.is_pressed}")
+        self.state_machine.tick()
+        self.container.tick()
 
     def run(self) -> None:
         while True:
             self.tick()
-            time.sleep(0.1)
+            time.sleep(0.01)
 
     def stop(self) -> None:
-        for io in self.io:
-            io.stop()
+        self.state_machine.deinitalize()
+        self.container.deinitialize()

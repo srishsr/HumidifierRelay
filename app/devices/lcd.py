@@ -34,16 +34,21 @@ class Lcd(IoWriteProcess[LcdData]):
         )
         self.brightness = pwmio.PWMOut(board.D8, frequency=5000, duty_cycle=0)
         self.queue: Queue[LcdData] = cast(Queue[LcdData], Queue())
+        self.prev_command: LcdData | None = None
 
         super().__init__(self.queue)
 
     def set_message(
         self, lines: list[str], clear: bool = False, brightness: float | None = None
     ) -> None:
-        self.queue.put(LcdData(lines, clear=clear, brightness=brightness))
+        new_command = LcdData(lines, clear=clear, brightness=brightness)
+        if new_command == self.prev_command:
+            return
+        self.prev_command = new_command
+        self.queue.put(new_command)
 
     def set_brightness(self, brightness: float) -> None:
-        self.queue.put(LcdData([], brightness))
+        self.set_message([], brightness=brightness)
 
     def first_tick(self) -> None:
         self._apply_message([], clear=True)
