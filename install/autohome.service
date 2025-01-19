@@ -1,0 +1,13 @@
+[Unit]
+After=autohome.service
+Description=Autohome Service
+
+[Service]
+Type=simple
+User=ben
+Group=ben
+RemainAfterExit=no
+ExecStart=/home/ben/HumidifierRelay/run.sh
+
+[Install]
+WantedBy=multi-user.target

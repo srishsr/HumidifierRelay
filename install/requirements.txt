@@ -1,0 +1,4 @@
+adafruit-circuitpython-dht
+adafruit-python-shell
+adafruit-blinka
+adafruit-circuitpython-charlcd
