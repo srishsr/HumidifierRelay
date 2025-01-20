@@ -31,3 +31,7 @@ class Relay(IoWriteProcess[RelayData]):
 
     def _apply_relay(self, state: bool) -> None:
         self.relay.value = state
+
+    def stop(self) -> None:
+        super().stop()
+        self._apply_relay(False)

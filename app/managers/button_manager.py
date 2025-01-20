@@ -1,5 +1,6 @@
 import time
 
+from app.config.config import Config
 from app.devices.dpad import ButtonName
 from app.managers.device_manager import DeviceManager
 from app.state_machine.keys.transition_event import TransitionEvent
@@ -10,7 +11,7 @@ def now() -> float:
 
 
 class ButtonManager:
-    def __init__(self, device: DeviceManager) -> None:
+    def __init__(self, config: Config, device: DeviceManager) -> None:
         self.dpad = device.dpad
         self.events = {
             ButtonName.NORTH: TransitionEvent.NORTH_PRESSED,
@@ -18,7 +19,7 @@ class ButtonManager:
             ButtonName.SOUTH: TransitionEvent.SOUTH_PRESSED,
             ButtonName.WEST: TransitionEvent.WEST_PRESSED,
         }
-        self.idle_timeout = 60.0
+        self.idle_timeout = config.idle_timeout
         self.init_delay_time = 0.1
         self.reset_timer()
         self.prev_states = {

@@ -3,3 +3,5 @@ adafruit-python-shell
 adafruit-blinka
 adafruit-circuitpython-charlcd
 numpy
+toml
+dacite

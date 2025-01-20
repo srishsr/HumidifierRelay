@@ -1,4 +1,4 @@
-from app.container import Container
+from app.managers.container import Container
 from app.state_machine.behavior import Behavior
 from app.state_machine.keys.transition_event import TransitionEvent
 

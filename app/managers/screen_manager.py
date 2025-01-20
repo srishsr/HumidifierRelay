@@ -37,7 +37,7 @@ class ScreenManager:
             temperature_str = ("%4.1fC" % data.temperature)[0:number_length]
 
         setpoint_str = ("%4.1f%%" % setpoint)[0:number_length]
-        relay_state = "\x01" if self.relay_manager.is_on() else "\x00"
+        relay_state = "\x00" if self.relay_manager.is_on() else "\x01"
 
         self.lcd.set_message(
             [

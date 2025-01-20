@@ -22,6 +22,9 @@ class RelayManager:
     def update(self) -> None:
         setpoint = self.setpoint_manager.get_setpoint()
         humidity = self.ambients_manager.get().humidity
-        is_relay_on = humidity > setpoint
+        if humidity == 0.0:
+            is_relay_on = False
+        else:
+            is_relay_on = setpoint > humidity
         self.relay.set_relay(is_relay_on)
         self.is_relay_on = is_relay_on

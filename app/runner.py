@@ -1,6 +1,8 @@
 import time
+from pathlib import Path
 
-from app.container import Container
+from app.config.config import load_config
+from app.managers.container import Container
 from app.state_machine.behaviors.decrease_setpoint import DecreaseSetpointBehavior
 from app.state_machine.behaviors.idle import IdleBehavior
 from app.state_machine.behaviors.increase_setpoint import IncreaseSetpointBehavior
@@ -14,8 +16,10 @@ from app.state_machine.state_machine import StateMachine
 
 class Runner:
     def __init__(self):
+        config_path = Path(__file__).parent.parent / "config.toml"
+        self.config = load_config(config_path)
         self.tick_delay = 0.01
-        self.container = Container()
+        self.container = Container(self.config)
 
         self.state_machine = StateMachine(
             StateKey.SHOW_DATA,

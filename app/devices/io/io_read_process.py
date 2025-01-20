@@ -8,7 +8,7 @@ from app.devices.io.io_process import IoProcess, T
 class IoReadProcess(IoProcess[T]):
     def __init__(self, queue: Queue[T]) -> None:
         self.queue = queue
-        self._process = Thread(target=self._run, args=(queue,), daemon=True)
+        self._process = Thread(target=self._run, args=(queue,))
         self._exit_event = Event()
 
     def _run(self, queue: Queue[T]) -> None:
