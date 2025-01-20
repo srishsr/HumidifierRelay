@@ -1,5 +1,6 @@
 from app.managers.ambients_manager import AmbientsManager
 from app.managers.device_manager import DeviceManager
+from app.managers.relay_manager import RelayManager
 from app.managers.setpoint_manager import SetpointManager
 
 
@@ -9,11 +10,13 @@ class ScreenManager:
         device: DeviceManager,
         setpoint_manager: SetpointManager,
         ambients_manager: AmbientsManager,
+        relay_manager: RelayManager,
     ) -> None:
         self.lcd = device.lcd
         self.humidity_sensors = device.humidity_sensors
         self.setpoint_manager = setpoint_manager
         self.ambients_manager = ambients_manager
+        self.relay_manager = relay_manager
 
     def clear(self) -> None:
         self.lcd.set_message([], clear=True)
@@ -21,21 +24,25 @@ class ScreenManager:
     def show_data(self) -> None:
         number_length = 6
         data = self.ambients_manager.get()
+        setpoint = self.setpoint_manager.get_setpoint()
 
         if data.humidity == 0.0:
-            humidity = "N/A   "
+            humidity_str = "N/A  "
         else:
-            humidity = ("%4.1f %%" % data.humidity)[0:number_length]
+            humidity_str = ("%4.1f%%" % data.humidity)[0:number_length]
 
         if data.temperature == 0.0:
-            temperature = "N/A   "
+            temperature_str = "N/A  "
         else:
-            temperature = ("%4.1f C" % data.temperature)[0:number_length]
+            temperature_str = ("%4.1fC" % data.temperature)[0:number_length]
+
+        setpoint_str = ("%4.1f%%" % setpoint)[0:number_length]
+        relay_state = "\x01" if self.relay_manager.is_on() else "\x00"
 
         self.lcd.set_message(
             [
-                f"H: {humidity}",
-                f"T: {temperature}",
+                f"H: {humidity_str} {relay_state}{setpoint_str}",
+                f"T: {temperature_str}",
             ]
         )
 

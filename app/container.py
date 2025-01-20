@@ -12,11 +12,14 @@ class Container:
         self.setpoint_manager = SetpointManager()
         self.button_manager = ButtonManager(self.devices)
         self.ambient_manager = AmbientsManager(self.devices)
-        self.screen_manager = ScreenManager(
-            self.devices, self.setpoint_manager, self.ambient_manager
-        )
         self.relay_manager = RelayManager(
             self.devices, self.setpoint_manager, self.ambient_manager
+        )
+        self.screen_manager = ScreenManager(
+            self.devices,
+            self.setpoint_manager,
+            self.ambient_manager,
+            self.relay_manager,
         )
 
     def initialize(self) -> None:
