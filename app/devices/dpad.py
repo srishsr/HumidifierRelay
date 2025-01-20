@@ -30,7 +30,7 @@ class DpadData:
 
 class Dpad(IoReadProcess[DpadData]):
     def __init__(self):
-        self.poll_interval = 0.01
+        self.poll_interval = 0.1
         queue: Queue[DpadData] = cast(Queue[DpadData], Queue())
 
         self.north = digitalio.DigitalInOut(board.D26)

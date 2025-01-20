@@ -19,6 +19,7 @@ class ButtonManager:
             ButtonName.WEST: TransitionEvent.WEST_PRESSED,
         }
         self.idle_timeout = 60.0
+        self.init_delay_time = 0.1
         self.reset_timer()
         self.prev_states = {
             ButtonName.NORTH: False,
@@ -37,7 +38,7 @@ class ButtonManager:
                     self.prev_states[button_data.name] = button_data.is_pressed
                 return
             else:
-                time.sleep(0.1)
+                time.sleep(self.init_delay_time)
 
     def get_events(self) -> tuple[TransitionEvent, ...]:
         if not (dpad_data := self.dpad.get()):

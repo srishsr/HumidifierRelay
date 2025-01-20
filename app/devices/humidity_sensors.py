@@ -23,6 +23,7 @@ class HumidifierData:
 class HumiditySensors(IoReadProcess[HumidifierData]):
     def __init__(self):
         self.poll_interval = 1.0
+        self.recovery_delay = 1.0
         queue: Queue[HumidifierData] = cast(Queue[HumidifierData], Queue())
 
         self.sensor1 = adafruit_dht.DHT11(board.D9)
@@ -51,5 +52,5 @@ class HumiditySensors(IoReadProcess[HumidifierData]):
             return SensorData(humidity, temperature_c)
         except RuntimeError as error:
             print(error.args[0])
-            time.sleep(1.0)
+            time.sleep(self.recovery_delay)
             return None

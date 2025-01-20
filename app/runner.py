@@ -14,6 +14,7 @@ from app.state_machine.state_machine import StateMachine
 
 class Runner:
     def __init__(self):
+        self.tick_delay = 0.01
         self.container = Container()
 
         self.state_machine = StateMachine(
@@ -74,7 +75,7 @@ class Runner:
     def run(self) -> None:
         while True:
             self.tick()
-            time.sleep(0.01)
+            time.sleep(self.tick_delay)
 
     def stop(self) -> None:
         self.state_machine.deinitalize()
