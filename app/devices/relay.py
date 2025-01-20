@@ -15,7 +15,7 @@ class RelayData:
 
 class Relay(IoWriteProcess[RelayData]):
     def __init__(self):
-        self.relay = digitalio.DigitalInOut(board.D21)
+        self.relay = digitalio.DigitalInOut(board.D13)
         self.relay.direction = digitalio.Direction.OUTPUT
         self.queue: Queue[RelayData] = cast(Queue[RelayData], Queue())
         super().__init__(self.queue)

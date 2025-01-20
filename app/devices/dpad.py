@@ -33,10 +33,10 @@ class Dpad(IoReadProcess[DpadData]):
         self.poll_interval = 0.1
         queue: Queue[DpadData] = cast(Queue[DpadData], Queue())
 
-        self.north = digitalio.DigitalInOut(board.D26)
-        self.east = digitalio.DigitalInOut(board.D20)
+        self.north = digitalio.DigitalInOut(board.D5)
+        self.east = digitalio.DigitalInOut(board.D6)
         self.south = digitalio.DigitalInOut(board.D16)
-        self.west = digitalio.DigitalInOut(board.D19)
+        self.west = digitalio.DigitalInOut(board.D26)
         self.buttons = [self.north, self.east, self.south, self.west]
         for button in self.buttons:
             self._setup_button(button)
