@@ -14,7 +14,7 @@ def setup_button(button: digitalio.DigitalInOut) -> None:
 
 class TestDevices:
     def __init__(self) -> None:
-        self.relay = digitalio.DigitalInOut(board.D13)
+        self.relay = digitalio.DigitalInOut(board.D19)
         self.relay.direction = digitalio.Direction.OUTPUT
         lcd_columns = 16
         lcd_rows = 2
@@ -42,10 +42,10 @@ class TestDevices:
         self.sensor2 = adafruit_dht.DHT11(board.D27)
 
         self.buttons = {
-            "north": digitalio.DigitalInOut(board.D6),
-            "east": digitalio.DigitalInOut(board.D10),
+            "north": digitalio.DigitalInOut(board.D13),
+            "east": digitalio.DigitalInOut(board.D26),
             "south": digitalio.DigitalInOut(board.D11),
-            "west": digitalio.DigitalInOut(board.D26),
+            "west": digitalio.DigitalInOut(board.D10),
         }
 
         for button in self.buttons.values():
