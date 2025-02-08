@@ -1,10 +1,12 @@
 from app.managers.settings_manager import SettingsManager
-
+import time
 
 class SetpointManager:
     def __init__(self, settings_manager: SettingsManager) -> None:
         self._humidity_setpoint = 0.0
         self.settings_manager = settings_manager
+        self.change_state_interval = settings_manager.config.change_state_interval
+        self.change_timer = self.get_now()
 
     def initialize(self) -> None:
         self._humidity_setpoint = self.settings_manager.settings.humidity_setpoint
@@ -17,3 +19,12 @@ class SetpointManager:
 
     def get_setpoint(self) -> float:
         return self._humidity_setpoint
+
+    def get_now(self) -> float:
+        return time.monotonic()
+
+    def can_set_state(self) -> float:
+        return self.change_timer + self.change_state_interval > self.get_now()
+
+    def set_change_timer(self) -> None:
+        self.change_timer = self.get_now()

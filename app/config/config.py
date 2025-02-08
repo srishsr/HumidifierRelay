@@ -11,6 +11,7 @@ from app.dataclass_utils import from_dict, to_dict
 @dataclass
 class Config:
     idle_timeout: float = 60.0
+    change_state_interval: float = 60 * 5  # 5 minutes
     settings_path: str = "settings.toml"
 
     def to_dict(self) -> dict:

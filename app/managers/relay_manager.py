@@ -20,6 +20,9 @@ class RelayManager:
         return self.is_relay_on
 
     def update(self) -> None:
+        if not self.setpoint_manager.can_set_state():
+            return 
+        self.setpoint_manager.set_change_timer()
         setpoint = self.setpoint_manager.get_setpoint()
         humidity = self.ambients_manager.get().humidity
         if humidity == 0.0:
