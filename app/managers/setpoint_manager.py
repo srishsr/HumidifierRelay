@@ -24,7 +24,9 @@ class SetpointManager:
         return time.monotonic()
 
     def can_set_state(self) -> float:
-        return self.change_timer + self.change_state_interval > self.get_now()
+        now = self.get_now()
+        expected_change_time = self.change_timer + self.change_state_interval
+        return  now >= expected_change_time
 
     def set_change_timer(self) -> None:
         self.change_timer = self.get_now()
